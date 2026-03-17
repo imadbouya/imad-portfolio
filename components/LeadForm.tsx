@@ -13,13 +13,13 @@ export default function LeadForm() {
   const handleSubmit = async () => {
     if (!form.full_name || !form.email) return
     setStatus('loading')
-    const { error } = await supabase.from('leads').insert([form])
+    const { error } = await supabase.from('leads').insert([{ ...form, lead_type: 'contact' }])
     if (error) { setStatus('error'); return }
     try {
       await fetch('https://imadbouya.app.n8n.cloud/webhook/imad-new-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, lead_type: 'contact' }),
       })
     } catch (_) {}
     setStatus('success')

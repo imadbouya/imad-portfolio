@@ -43,15 +43,16 @@ export default function BookingPage() {
     const { error } = await supabase.from('leads').insert([{
       full_name: form.full_name,
       email: form.email,
-      business_name: form.phone,
-      service_interest: `BOOKING: ${bookingDate} at ${selectedTime} — ${form.notes}`,
+      phone: form.phone,
+      service_interest: `${bookingDate} at ${selectedTime}${form.notes ? ' — ' + form.notes : ''}`,
+      lead_type: 'booking',
     }])
     if (error) { setStatus('error'); return }
     try {
       await fetch('https://imadbouya.app.n8n.cloud/webhook/imad-new-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name: form.full_name, email: form.email, business_name: form.phone, service_interest: `BOOKING: ${bookingDate} at ${selectedTime}` }),
+        body: JSON.stringify({ full_name: form.full_name, email: form.email, phone: form.phone, booking_date: bookingDate, booking_time: selectedTime, lead_type: 'booking' }),
       })
     } catch (_) {}
     setStatus('success')
