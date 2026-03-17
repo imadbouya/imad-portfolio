@@ -15,6 +15,13 @@ export default function LeadForm() {
     setStatus('loading')
     const { error } = await supabase.from('leads').insert([form])
     if (error) { setStatus('error'); return }
+    try {
+      await fetch('https://imadbouya.app.n8n.cloud/webhook/imad-new-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+    } catch (_) {}
     setStatus('success')
     setForm({ full_name: '', business_name: '', email: '', service_interest: '' })
   }

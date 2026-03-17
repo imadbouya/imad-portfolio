@@ -47,6 +47,13 @@ export default function BookingPage() {
       service_interest: `BOOKING: ${bookingDate} at ${selectedTime} — ${form.notes}`,
     }])
     if (error) { setStatus('error'); return }
+    try {
+      await fetch('https://imadbouya.app.n8n.cloud/webhook/imad-new-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name: form.full_name, email: form.email, business_name: form.phone, service_interest: `BOOKING: ${bookingDate} at ${selectedTime}` }),
+      })
+    } catch (_) {}
     setStatus('success')
   }
 
